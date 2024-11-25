@@ -3,8 +3,8 @@ Template: darkmode_lightmode
 <div align="center">
   
   ![GitHub repo size](https://img.shields.io/github/repo-size/r3dc0dez/darkmode_lightmode)
-  ![GitHub stars](https://img.shields.io/github/stars/r3dc0dez/r3dc0dez/darkmode_lightmode?style=social)
-  ![GitHub forks](https://img.shields.io/github/forks/r3dc0dez/r3dc0dez/darkmode_lightmode?style=social)
+  ![GitHub stars](https://img.shields.io/github/stars/r3dc0dez/darkmode_lightmode?style=social)
+  ![GitHub forks](https://img.shields.io/github/forks/r3dc0dez/darkmode_lightmode?style=social)
 
   <br />
   <br />
@@ -21,7 +21,7 @@ Template: darkmode_lightmode
 
 ### Demo Screeshots
 
-![QCY Desktop Demo](.git-preview.png "Desktop Demo")
+![DARK_LUIGHT Desktop Demo](git-preview.png "Desktop Demo")
 
 ### Prerequisites
 
