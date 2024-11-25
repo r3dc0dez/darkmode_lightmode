@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Dark/Light Mode</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-light: #4a90e2;
+            --primary-dark: #2c3e50;
+            --background-light: #f8f9fa;
+            --background-dark: #1a1a1a;
+            --text-light: #2c3e50;
+            --text-dark: #ecf0f1;
+            --card-light: #ffffff;
+            --card-dark: #2d2d2d;
+            --shadow-light: 0 8px 30px rgba(0,0,0,0.12);
+            --shadow-dark: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(74, 144, 226, 0.1), rgba(44, 62, 80, 0.1));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        body.dark-mode::before {
+            opacity: 0.1;
+            background: linear-gradient(45deg, rgba(44, 62, 80, 0.2), rgba(74, 144, 226, 0.2));
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        .dark-mode h1 {
+            background: linear-gradient(45deg, #ecf0f1, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.3s;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--card-light);
+            box-shadow: var(--shadow-light);
+            margin: 2rem 0;
+            z-index: 1;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-dark));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle:hover::before {
+            opacity: 0.1;
+        }
+
+        .dark-mode .theme-toggle {
+            color: var(--text-dark);
+            background: var(--card-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--card-light);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px) rotateX(10deg);
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .dark-mode .card {
+            background: var(--card-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02) rotateX(0deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2rem;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark-mode .icon {
+            transform: rotate(360deg);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transform: scale(0);
+            animation: popIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.8s;
+        }
+
+        .dark-mode .feature-icon {
+            background: linear-gradient(45deg, #ecf0f1, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        @keyframes popIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes ripple {
+            to {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+
+        .theme-text {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-text {
+            opacity: 0.7;
+            top: -25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dark Mode and Light Mode Template</h1>
+        <p>Experience the perfect balance between light and dark themes with smooth transitions and animations.</p>
+        
+        <button class="theme-toggle">
+            <span class="icon">🌓</span>
+            <span class="button-text">Toggle Theme</span>
+        </button>
+
+        <div class="cards-container">
+            <div class="card" style="animation-delay: 0.2s">
+                <div class="feature-icon">⚡</div>
+                <h2>Lightning Fast</h2>
+                <p>Crazy fast loading, but still fast enough for you to enjoy.</p>
+            </div>
+            <div class="card" style="animation-delay: 0.4s">
+                <div class="feature-icon">🎨</div>
+                <h2>Beautiful Design</h2>
+                <p>Crazy designs, and fits for both light and dark themes.</p>
+            </div>
+            <div class="card" style="animation-delay: 0.6s">
+                <div class="feature-icon">🌈</div>
+                <h2>Dynamic Themes</h2>
+                <p>Seamlessly switch between light and dark modes with animations.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const buttonText = document.querySelector('.button-text');
+        const icon = document.querySelector('.icon');
+
+        // checks if dark mode is enabled
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark-mode');
+            buttonText.textContent = 'Light Mode';
+            icon.textContent = '🌞';
+        }
+
+        themeToggle.addEventListener('click', (e) => {
+            body.classList.toggle('dark-mode');
+            
+            // updates button
+            if (body.classList.contains('dark-mode')) {
+                buttonText.textContent = 'Light Mode';
+                icon.textContent = '🌞';
+                localStorage.setItem('darkMode', 'true');
+            } else {
+                buttonText.textContent = 'Dark Mode';
+                icon.textContent = '🌓';
+                localStorage.setItem('darkMode', 'false');
+            }
+
+            // riplle
+            const ripple = document.createElement('span');
+            const rect = themeToggle.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                top: ${y}px;
+                left: ${x}px;
+                transform: translate(-50%, -50%) scale(0);
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                pointer-events: none;
+                animation: ripple 0.6s linear;
+            `;
+            
+            themeToggle.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) rotateX(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // mouse hover something
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+    </script>
+</body>
+</html>
